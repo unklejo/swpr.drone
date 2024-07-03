@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/SawitProRecruitment/UserService/generated"
 	"github.com/labstack/echo/v4"
+	"github.com/unklejo/swpr.drone/generated"
 )
 
 // This is just a test endpoint to get you started. Please delete this endpoint.

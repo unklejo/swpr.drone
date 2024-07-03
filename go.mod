@@ -1,4 +1,4 @@
-module github.com/SawitProRecruitment/UserService
+module github.com/unklejo/swpr.drone
 
 go 1.21
 
