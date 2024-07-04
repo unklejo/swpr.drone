@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -96,7 +95,7 @@ func TestCreateEstate_InternalServerError(t *testing.T) {
 		Repository: mockRepo,
 	}
 
-	mockRepo.EXPECT().CreateEstate(gomock.Any(), 10, 10).Return(fmt.Errorf("some error"))
+	mockRepo.EXPECT().CreateEstate(gomock.Any(), 10, 10).Return(repository.ErrDatabaseError)
 
 	h.CreateEstate(c)
 
@@ -176,4 +175,29 @@ func TestAddTree_EstateNotFound(t *testing.T) {
 
 	assert.Equal(t, http.StatusBadRequest, rec.Code)
 	assert.Contains(t, rec.Body.String(), "Related resource not found")
+}
+
+func TestAddTree_DatabaseError(t *testing.T) {
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodPost, "/estate/1/tree", strings.NewReader(`{"x": 1, "y": 1, "height": 10}`))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetParamNames("id")
+	c.SetParamValues("1")
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
+	h := &Server{
+		Repository: mockRepo,
+	}
+
+	mockRepo.EXPECT().AddTree(gomock.Any(), "1", 1, 1, 10).Return(repository.ErrDatabaseError)
+
+	h.AddTreeToEstate(c)
+
+	assert.Equal(t, http.StatusInternalServerError, rec.Code)
+	assert.Contains(t, rec.Body.String(), "Failed to add tree")
 }
