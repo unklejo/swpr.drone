@@ -13,8 +13,13 @@ func (s *Server) CreateEstate(ctx echo.Context) error {
 		Width  int `json:"width"`
 		Length int `json:"length"`
 	}
+
 	if err := ctx.Bind(&request); err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
+	}
+
+	if request.Width <= 0 || request.Length <= 0 {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Width and Length must be greater than 0"})
 	}
 
 	id := uuid.New().String()
