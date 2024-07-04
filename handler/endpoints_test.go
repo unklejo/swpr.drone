@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -53,10 +52,9 @@ func TestCreateEstate_InvalidInput(t *testing.T) {
 
 	h.CreateEstate(c)
 
-	// Print debug output
-	fmt.Printf("Response Code: %d, Response Body: %s\n", rec.Code, rec.Body.String())
+	// // Print debug output
+	// fmt.Printf("Response Code: %d, Response Body: %s\n", rec.Code, rec.Body.String())
 
-	// Assertions
 	assert.Equal(t, http.StatusBadRequest, rec.Code)
 	assert.Contains(t, rec.Body.String(), "Invalid input")
 }
