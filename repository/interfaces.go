@@ -6,8 +6,15 @@ package repository
 
 import "context"
 
+type Estate struct {
+	Id     string
+	Width  int
+	Length int
+}
+
 type RepositoryInterface interface {
 	GetTestById(ctx context.Context, input GetTestByIdInput) (output GetTestByIdOutput, err error)
 	CreateEstate(id string, width, length int) error
 	AddTree(id, estateId string, x, y, height int) error
+	GetEstateById(id string) (Estate, error)
 }

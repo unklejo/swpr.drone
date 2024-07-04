@@ -63,6 +63,21 @@ func (mr *MockRepositoryInterfaceMockRecorder) CreateEstate(id, width, length in
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEstate", reflect.TypeOf((*MockRepositoryInterface)(nil).CreateEstate), id, width, length)
 }
 
+// GetEstateById mocks base method.
+func (m *MockRepositoryInterface) GetEstateById(id string) (repository.Estate, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetEstateById", id)
+	ret0, _ := ret[0].(repository.Estate)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetEstateById indicates an expected call of GetEstateById.
+func (mr *MockRepositoryInterfaceMockRecorder) GetEstateById(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEstateById", reflect.TypeOf((*MockRepositoryInterface)(nil).GetEstateById), id)
+}
+
 // GetTestById mocks base method.
 func (m *MockRepositoryInterface) GetTestById(ctx context.Context, input repository.GetTestByIdInput) (repository.GetTestByIdOutput, error) {
 	m.ctrl.T.Helper()

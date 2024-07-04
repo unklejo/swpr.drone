@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"database/sql"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -122,6 +123,7 @@ func TestAddTree_Success(t *testing.T) {
 		Repository: mockRepo,
 	}
 
+	mockRepo.EXPECT().GetEstateById("1").Return(repository.Estate{Id: "1", Width: 10, Length: 10}, nil)
 	mockRepo.EXPECT().AddTree(gomock.Any(), "1", 1, 1, 10).Return(nil)
 
 	h.AddTreeToEstate(c)
@@ -170,7 +172,7 @@ func TestAddTree_EstateNotFound(t *testing.T) {
 		Repository: mockRepo,
 	}
 
-	mockRepo.EXPECT().AddTree(gomock.Any(), "1", 1, 1, 10).Return(repository.ErrForeignKeyNotFound)
+	mockRepo.EXPECT().GetEstateById("1").Return(repository.Estate{Id: "", Width: 0, Length: 0}, sql.ErrNoRows)
 
 	h.AddTreeToEstate(c)
 
@@ -195,6 +197,7 @@ func TestAddTree_DatabaseError(t *testing.T) {
 		Repository: mockRepo,
 	}
 
+	mockRepo.EXPECT().GetEstateById("1").Return(repository.Estate{Id: "1", Width: 10, Length: 10}, nil)
 	mockRepo.EXPECT().AddTree(gomock.Any(), "1", 1, 1, 10).Return(repository.ErrDatabaseError)
 
 	h.AddTreeToEstate(c)
@@ -220,6 +223,7 @@ func TestAddTree_PlotAlreadyHasTree(t *testing.T) {
 		Repository: mockRepo,
 	}
 
+	mockRepo.EXPECT().GetEstateById("1").Return(repository.Estate{Id: "1", Width: 10, Length: 10}, nil)
 	mockRepo.EXPECT().AddTree(gomock.Any(), "1", 1, 1, 10).Return(&pq.Error{Code: "23505"})
 
 	h.AddTreeToEstate(c)

@@ -19,3 +19,12 @@ func (r *Repository) AddTree(id, estateId string, x, y, height int) error {
 	_, err := r.Db.Exec("INSERT INTO trees (id, estate_id, x_coordinate, y_coordinate, height) VALUES ($1, $2, $3, $4, $5)", id, estateId, x, y, height)
 	return err
 }
+
+func (r *Repository) GetEstateById(id string) (Estate, error) {
+	var estate Estate
+	err := r.Db.QueryRow("SELECT id, width, length FROM estates WHERE id = $1", id).Scan(&estate.Id, &estate.Width, &estate.Length)
+	if err != nil {
+		return estate, err
+	}
+	return estate, nil
+}
