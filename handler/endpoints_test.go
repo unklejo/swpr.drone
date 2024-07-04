@@ -108,7 +108,7 @@ func TestCreateEstate_InternalServerError(t *testing.T) {
 // 2. Add tree test files
 func TestAddTree_Success(t *testing.T) {
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodPost, "/estate/1/tree", strings.NewReader(`{"x": 1, "y": 1, "height": 10}`))
+	req := httptest.NewRequest(http.MethodPost, "/estate/1/tree", strings.NewReader(`{"x": 1, "y": 10, "height": 10}`))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
@@ -124,7 +124,7 @@ func TestAddTree_Success(t *testing.T) {
 	}
 
 	mockRepo.EXPECT().GetEstateById("1").Return(repository.Estate{Id: "1", Width: 10, Length: 10}, nil)
-	mockRepo.EXPECT().AddTree(gomock.Any(), "1", 1, 1, 10).Return(nil)
+	mockRepo.EXPECT().AddTree(gomock.Any(), "1", 1, 10, 10).Return(nil)
 
 	h.AddTreeToEstate(c)
 
