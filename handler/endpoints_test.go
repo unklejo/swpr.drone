@@ -127,3 +127,25 @@ func TestAddTree_Success(t *testing.T) {
 		assert.Contains(t, rec.Body.String(), `"id"`)
 	}
 }
+
+func TestAddTreeInvalidInput(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	e := echo.New()
+	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
+	server := NewServer(NewServerOptions{Repository: mockRepo})
+
+	body := `{"x": "invalid", "y": 1, "height": 10}`
+	req := httptest.NewRequest(http.MethodPost, "/estate/1/tree", strings.NewReader(body))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetParamNames("id")
+	c.SetParamValues("1")
+
+	if assert.Error(t, server.AddTreeToEstate(c)) {
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
+		assert.Contains(t, rec.Body.String(), `"error":"Invalid input"`)
+	}
+}
