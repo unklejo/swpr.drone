@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -11,6 +10,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
+	"github.com/unklejo/swpr.drone/repository"
 	"github.com/unklejo/swpr.drone/repository/mocks"
 )
 
@@ -170,10 +170,10 @@ func TestAddTree_EstateNotFound(t *testing.T) {
 		Repository: mockRepo,
 	}
 
-	mockRepo.EXPECT().AddTree(gomock.Any(), "1", 1, 1, 10).Return(errors.New("estate not found"))
+	mockRepo.EXPECT().AddTree(gomock.Any(), "1", 1, 1, 10).Return(repository.ErrForeignKeyNotFound)
 
 	h.AddTreeToEstate(c)
 
-	assert.Equal(t, http.StatusInternalServerError, rec.Code)
-	assert.Contains(t, rec.Body.String(), "Failed to add tree")
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.Contains(t, rec.Body.String(), "Related resource not found")
 }
