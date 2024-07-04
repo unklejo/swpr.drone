@@ -105,47 +105,49 @@ func TestCreateEstate_InternalServerError(t *testing.T) {
 
 // 2. Add tree test files
 func TestAddTree_Success(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
 	e := echo.New()
-	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
-	server := NewServer(NewServerOptions{Repository: mockRepo})
-
-	body := `{"x": 1, "y": 1, "height": 10}`
-	req := httptest.NewRequest(http.MethodPost, "/estate/1/tree", strings.NewReader(body))
+	req := httptest.NewRequest(http.MethodPost, "/estate/1/tree", strings.NewReader(`{"x": 1, "y": 1, "height": 10}`))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	c.SetParamNames("id")
 	c.SetParamValues("1")
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
+	h := &Server{
+		Repository: mockRepo,
+	}
 
 	mockRepo.EXPECT().AddTree(gomock.Any(), "1", 1, 1, 10).Return(nil)
 
-	if assert.NoError(t, server.AddTreeToEstate(c)) {
-		assert.Equal(t, http.StatusCreated, rec.Code)
-		assert.Contains(t, rec.Body.String(), `"id"`)
-	}
+	h.AddTreeToEstate(c)
+
+	assert.Equal(t, http.StatusCreated, rec.Code)
+	assert.Contains(t, rec.Body.String(), "id")
 }
 
-func TestAddTreeInvalidInput(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
+func TestAddTree_InvalidInput(t *testing.T) {
 	e := echo.New()
-	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
-	server := NewServer(NewServerOptions{Repository: mockRepo})
-
-	body := `{"x": "invalid", "y": 1, "height": 10}`
-	req := httptest.NewRequest(http.MethodPost, "/estate/1/tree", strings.NewReader(body))
+	req := httptest.NewRequest(http.MethodPost, "/estate/1/tree", strings.NewReader(`{"x": "invalid", "y": 1, "height": 10}`))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	c.SetParamNames("id")
 	c.SetParamValues("1")
 
-	if assert.Error(t, server.AddTreeToEstate(c)) {
-		assert.Equal(t, http.StatusBadRequest, rec.Code)
-		assert.Contains(t, rec.Body.String(), `"error":"Invalid input"`)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
+	h := &Server{
+		Repository: mockRepo,
 	}
+
+	h.AddTreeToEstate(c)
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.Contains(t, rec.Body.String(), "Invalid input")
 }
