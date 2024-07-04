@@ -35,6 +35,20 @@ func (m *MockRepositoryInterface) EXPECT() *MockRepositoryInterfaceMockRecorder 
 	return m.recorder
 }
 
+// AddTree mocks base method.
+func (m *MockRepositoryInterface) AddTree(id, estateId string, x, y, height int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddTree", id, estateId, x, y, height)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddTree indicates an expected call of AddTree.
+func (mr *MockRepositoryInterfaceMockRecorder) AddTree(id, estateId, x, y, height interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTree", reflect.TypeOf((*MockRepositoryInterface)(nil).AddTree), id, estateId, x, y, height)
+}
+
 // CreateEstate mocks base method.
 func (m *MockRepositoryInterface) CreateEstate(id string, width, length int) error {
 	m.ctrl.T.Helper()

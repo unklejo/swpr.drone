@@ -13,6 +13,8 @@ import (
 	"github.com/unklejo/swpr.drone/repository/mocks"
 )
 
+// 1. Create estate test files
+
 func TestCreateEstate_Success(t *testing.T) {
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodPost, "/estate", strings.NewReader(`{"width":10, "length":10}`))
@@ -99,4 +101,29 @@ func TestCreateEstate_InternalServerError(t *testing.T) {
 
 	assert.Equal(t, http.StatusInternalServerError, rec.Code)
 	assert.Contains(t, rec.Body.String(), "Failed to create estate")
+}
+
+// 2. Add tree test files
+func TestAddTree_Success(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	e := echo.New()
+	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
+	server := NewServer(NewServerOptions{Repository: mockRepo})
+
+	body := `{"x": 1, "y": 1, "height": 10}`
+	req := httptest.NewRequest(http.MethodPost, "/estate/1/tree", strings.NewReader(body))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetParamNames("id")
+	c.SetParamValues("1")
+
+	mockRepo.EXPECT().AddTree(gomock.Any(), "1", 1, 1, 10).Return(nil)
+
+	if assert.NoError(t, server.AddTreeToEstate(c)) {
+		assert.Equal(t, http.StatusCreated, rec.Code)
+		assert.Contains(t, rec.Body.String(), `"id"`)
+	}
 }
