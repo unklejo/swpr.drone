@@ -11,5 +11,5 @@ type ServerInterface interface {
 
 // RegisterHandlers registers all route handlers to the Echo instance
 func RegisterHandlers(e *echo.Echo, server ServerInterface) {
-	e.GET("/estate", server.CreateEstate)
+	e.POST("/estate", server.CreateEstate)
 }
