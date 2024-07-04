@@ -14,3 +14,8 @@ func (r *Repository) CreateEstate(id string, width, length int) error {
 	_, err := r.Db.Exec("INSERT INTO estates (id, width, length) VALUES ($1, $2, $3)", id, width, length)
 	return err
 }
+
+func (r *Repository) AddTree(id, estateId string, x, y, height int) error {
+	_, err := r.Db.Exec("INSERT INTO trees (id, estate_id, x_coordinate, y_coordinate, height) VALUES ($1, $2, $3, $4, $5)", id, estateId, x, y, height)
+	return err
+}

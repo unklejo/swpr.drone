@@ -30,3 +30,23 @@ func (s *Server) CreateEstate(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusCreated, map[string]string{"id": id})
 }
+
+func (s *Server) AddTreeToEstate(ctx echo.Context) error {
+	estateId := ctx.Param("id")
+	var request struct {
+		X      int `json:"x"`
+		Y      int `json:"y"`
+		Height int `json:"height"`
+	}
+
+	if err := ctx.Bind(&request); err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
+	}
+
+	treeId := uuid.New().String()
+	if err := s.Repository.AddTree(treeId, estateId, request.X, request.Y, request.Height); err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to add tree"})
+	}
+
+	return ctx.JSON(http.StatusCreated, map[string]string{"id": treeId})
+}

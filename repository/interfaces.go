@@ -9,4 +9,5 @@ import "context"
 type RepositoryInterface interface {
 	GetTestById(ctx context.Context, input GetTestByIdInput) (output GetTestByIdOutput, err error)
 	CreateEstate(id string, width, length int) error
+	AddTree(id, estateId string, x, y, height int) error
 }
