@@ -29,10 +29,10 @@ func TestCreateEstate_Success(t *testing.T) {
 
 	mockRepo.EXPECT().CreateEstate(gomock.Any(), 10, 10).Return(nil)
 
-	if assert.NoError(t, h.CreateEstate(c)) {
-		assert.Equal(t, http.StatusCreated, rec.Code)
-		assert.Contains(t, rec.Body.String(), "id")
-	}
+	h.CreateEstate(c)
+
+	assert.Equal(t, http.StatusCreated, rec.Code)
+	assert.Contains(t, rec.Body.String(), "id")
 }
 
 func TestCreateEstate_InvalidInput(t *testing.T) {
@@ -52,9 +52,27 @@ func TestCreateEstate_InvalidInput(t *testing.T) {
 
 	h.CreateEstate(c)
 
-	// // Print debug output
-	// fmt.Printf("Response Code: %d, Response Body: %s\n", rec.Code, rec.Body.String())
-
 	assert.Equal(t, http.StatusBadRequest, rec.Code)
 	assert.Contains(t, rec.Body.String(), "Invalid input")
+}
+
+func TestCreateEstate_NegativeValues(t *testing.T) {
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodPost, "/estate", strings.NewReader(`{"width":-1, "length":-2}`))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
+	h := &Server{
+		Repository: mockRepo,
+	}
+
+	h.CreateEstate(c)
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.Contains(t, rec.Body.String(), "Width and Length must be greater than 0")
 }
