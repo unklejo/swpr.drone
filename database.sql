@@ -14,6 +14,8 @@ CREATE TABLE test (
 -- Table to store estate information
 CREATE TABLE IF NOT EXISTS estates (
     id UUID PRIMARY KEY,
+    -- width INTEGER NOT NULL CHECK (width > 0 AND width <= 50000),
+    -- length INTEGER NOT NULL CHECK (length > 0 AND length <= 50000),
     width INTEGER NOT NULL,
     length INTEGER NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -26,6 +28,7 @@ CREATE TABLE IF NOT EXISTS trees (
     estate_id UUID NOT NULL REFERENCES estates(id) ON DELETE CASCADE,
     x_coordinate INTEGER NOT NULL,
     y_coordinate INTEGER NOT NULL,
+    -- height INTEGER NOT NULL CHECK (height >= 1 AND height <= 30),
     height INTEGER NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
 	updated_at TIMESTAMPTZ DEFAULT NOW(),
