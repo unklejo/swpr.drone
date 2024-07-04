@@ -21,8 +21,8 @@ type EstateStats struct {
 
 type RepositoryInterface interface {
 	GetTestById(ctx context.Context, input GetTestByIdInput) (output GetTestByIdOutput, err error)
-	CreateEstate(id string, width, length int) error
-	AddTree(id, estateId string, x, y, height int) error
-	GetEstateById(id string) (Estate, error)
-	GetEstateStatsById(estateId string) (EstateStats, error)
+	CreateEstate(id string, width, length int) (err error)
+	AddTree(id, estateId string, x, y, height int) (err error)
+	GetEstateById(id string) (estate Estate, err error)
+	GetEstateStatsById(estateId string) (stats EstateStats, err error)
 }
