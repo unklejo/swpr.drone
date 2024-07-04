@@ -48,7 +48,7 @@ func (s *Server) AddTreeToEstate(ctx echo.Context) error {
 	treeId := uuid.New().String()
 	if err := s.Repository.AddTree(treeId, estateId, request.X, request.Y, request.Height); err != nil {
 		if err == repository.ErrForeignKeyNotFound {
-			return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Related resource not found"})
+			return ctx.JSON(http.StatusNotFound, map[string]string{"error": "Related resource not found"})
 		}
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to add tree"})
 	}

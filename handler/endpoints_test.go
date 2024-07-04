@@ -173,7 +173,7 @@ func TestAddTree_EstateNotFound(t *testing.T) {
 
 	h.AddTreeToEstate(c)
 
-	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.Equal(t, http.StatusNotFound, rec.Code)
 	assert.Contains(t, rec.Body.String(), "Related resource not found")
 }
 
