@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// CreateEstate is the handler for the /estate endpoint
+// Handler for the /estate endpoint
 func (s *Server) CreateEstate(ctx echo.Context) error {
 	var request struct {
 		Width  int `json:"width"`
