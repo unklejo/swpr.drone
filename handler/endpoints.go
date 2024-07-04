@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 
+	"github.com/lib/pq"
 	"github.com/unklejo/swpr.drone/repository"
 )
 
@@ -45,10 +46,16 @@ func (s *Server) AddTreeToEstate(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
 	}
 
+	// Error handling regarding database and foreign key
 	treeId := uuid.New().String()
-	if err := s.Repository.AddTree(treeId, estateId, request.X, request.Y, request.Height); err != nil {
+	err := s.Repository.AddTree(treeId, estateId, request.X, request.Y, request.Height)
+	if err != nil {
 		if err == repository.ErrForeignKeyNotFound {
 			return ctx.JSON(http.StatusNotFound, map[string]string{"error": "Related resource not found"})
+		}
+
+		if err, ok := err.(*pq.Error); ok && err.Code == "23505" { // Unique violation
+			return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Plot already has a tree"})
 		}
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to add tree"})
 	}
