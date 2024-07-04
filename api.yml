@@ -48,3 +48,45 @@ paths:
                     format: uuid
         '400':
           description: Invalid input
+  /estate/{id}/tree:
+    post:
+      summary: Add a tree to an estate
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                x:
+                  type: integer
+                  minimum: 1
+                y:
+                  type: integer
+                  minimum: 1
+                height:
+                  type: integer
+                  minimum: 1
+                  maximum: 30
+      responses:
+        '201':
+          description: Tree created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+        '400':
+          description: Invalid input
+        '404':
+          description: Estate not found
