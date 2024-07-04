@@ -60,6 +60,7 @@ func (s *Server) AddTreeToEstate(ctx echo.Context) error {
 		}
 	}
 
+	// Coordinates out of bounds from estate's plot
 	if request.X < 0 || request.Y < 0 || request.X >= estate.Width || request.Y >= estate.Length {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Coordinates out of bounds"})
 	}
