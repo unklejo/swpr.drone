@@ -28,3 +28,13 @@ func (r *Repository) GetEstateById(id string) (Estate, error) {
 	}
 	return estate, nil
 }
+
+func (r *Repository) GetEstateStatsById(estateId string) (EstateStats, error) {
+	var stats EstateStats
+	err := r.Db.QueryRow("SELECT COUNT(estate_id), MAX(height), MIN(height), MEDIAN(height) FROM trees WHERE estate_id = $1", estateId).Scan(&stats.Count, &stats.MaxHeight, &stats.MinHeight, &stats.MedianHeight)
+	if err != nil {
+		return stats, err
+	}
+
+	return stats, nil
+}

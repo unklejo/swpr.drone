@@ -94,3 +94,33 @@ paths:
           description: Estate not found
         '500':
           description: Internal server error
+/estate/{id}/stats:
+    get:
+      summary: Get estate stats based on trees
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success get estate stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  max_height:
+                    type: integer
+                  min_height:
+                    type: integer
+                  median_height:
+                    type: integer
+        '404':
+          description: Estate not found
+        '500':
+          description: Internal server error

@@ -12,9 +12,17 @@ type Estate struct {
 	Length int
 }
 
+type EstateStats struct {
+	Count        int
+	MaxHeight    int
+	MinHeight    int
+	MedianHeight int
+}
+
 type RepositoryInterface interface {
 	GetTestById(ctx context.Context, input GetTestByIdInput) (output GetTestByIdOutput, err error)
 	CreateEstate(id string, width, length int) error
 	AddTree(id, estateId string, x, y, height int) error
 	GetEstateById(id string) (Estate, error)
+	GetEstateStatsById(estateId string) (EstateStats, error)
 }
