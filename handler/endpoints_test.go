@@ -338,3 +338,29 @@ func TestGetEstateStats_EstateNotFound(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, rec.Code)
 	assert.Contains(t, rec.Body.String(), "Estate not found")
 }
+
+func TestGetEstateStats_DatabaseError(t *testing.T) {
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/estate/1/stats", nil)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetParamNames("id")
+	c.SetParamValues("1")
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
+	h := &Server{
+		Repository: mockRepo,
+	}
+
+	mockRepo.EXPECT().GetEstateById("1").Return(repository.Estate{Id: "1", Width: 10, Length: 10}, nil)
+	mockRepo.EXPECT().GetEstateStatsById("1").Return(repository.EstateStats{}, repository.ErrDatabaseError)
+
+	h.GetEstateStats(c)
+
+	assert.Equal(t, http.StatusInternalServerError, rec.Code)
+	assert.Contains(t, rec.Body.String(), "Failed to retrieve estate stats")
+}
