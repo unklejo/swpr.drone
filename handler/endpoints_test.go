@@ -279,4 +279,7 @@ func TestGetEstateStats_Success(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.Contains(t, rec.Body.String(), `"count":3`)
+	assert.Contains(t, rec.Body.String(), `"max":20`)
+	assert.Contains(t, rec.Body.String(), `"min":5`)
+	assert.Contains(t, rec.Body.String(), `"median":15`)
 }
