@@ -234,7 +234,7 @@ func TestAddTree_PlotAlreadyHasTree(t *testing.T) {
 
 func TestAddTree_CoordinatesOutOfBounds(t *testing.T) {
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodPost, "/estate/1/tree", strings.NewReader(`{"x": 11, "y": 8, "height": 10}`))
+	req := httptest.NewRequest(http.MethodPost, "/estate/1/tree", strings.NewReader(`{"x": 0, "y": 12, "height": 10}`))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
