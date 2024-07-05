@@ -29,7 +29,7 @@ func (r *Repository) GetEstateById(id string) (estate Estate, err error) {
 }
 
 func (r *Repository) GetEstateStatsById(estateId string) (stats EstateStats, err error) {
-	err = r.Db.QueryRow("SELECT COUNT(estate_id), MAX(height), MIN(height), PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY height) FROM trees WHERE estate_id = $1", estateId).Scan(&stats.Count, &stats.MaxHeight, &stats.MinHeight, &stats.MedianHeight)
+	err = r.Db.QueryRow("SELECT COUNT(id), COALESCE(MAX(height), 0), COALESCE(MIN(height), 0), COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY height), 0) FROM trees WHERE estate_id = $1", estateId).Scan(&stats.Count, &stats.MaxHeight, &stats.MinHeight, &stats.MedianHeight)
 	if err != nil {
 		return stats, err
 	}
