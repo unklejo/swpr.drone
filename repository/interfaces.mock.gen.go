@@ -35,31 +35,48 @@ func (m *MockRepositoryInterface) EXPECT() *MockRepositoryInterfaceMockRecorder 
 }
 
 // AddTree mocks base method.
-func (m *MockRepositoryInterface) AddTree(id, estateId string, x, y, height int) error {
+func (m *MockRepositoryInterface) AddTree(estateId string, x, y, height int) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddTree", id, estateId, x, y, height)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "AddTree", estateId, x, y, height)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // AddTree indicates an expected call of AddTree.
-func (mr *MockRepositoryInterfaceMockRecorder) AddTree(id, estateId, x, y, height interface{}) *gomock.Call {
+func (mr *MockRepositoryInterfaceMockRecorder) AddTree(estateId, x, y, height interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTree", reflect.TypeOf((*MockRepositoryInterface)(nil).AddTree), id, estateId, x, y, height)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTree", reflect.TypeOf((*MockRepositoryInterface)(nil).AddTree), estateId, x, y, height)
 }
 
 // CreateEstate mocks base method.
-func (m *MockRepositoryInterface) CreateEstate(id string, width, length int) error {
+func (m *MockRepositoryInterface) CreateEstate(width, length int) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateEstate", id, width, length)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "CreateEstate", width, length)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // CreateEstate indicates an expected call of CreateEstate.
-func (mr *MockRepositoryInterfaceMockRecorder) CreateEstate(id, width, length interface{}) *gomock.Call {
+func (mr *MockRepositoryInterfaceMockRecorder) CreateEstate(width, length interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEstate", reflect.TypeOf((*MockRepositoryInterface)(nil).CreateEstate), id, width, length)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEstate", reflect.TypeOf((*MockRepositoryInterface)(nil).CreateEstate), width, length)
+}
+
+// GetDronePlanByEstateId mocks base method.
+func (m *MockRepositoryInterface) GetDronePlanByEstateId(estateId string) (DronePlan, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDronePlanByEstateId", estateId)
+	ret0, _ := ret[0].(DronePlan)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDronePlanByEstateId indicates an expected call of GetDronePlanByEstateId.
+func (mr *MockRepositoryInterfaceMockRecorder) GetDronePlanByEstateId(estateId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDronePlanByEstateId", reflect.TypeOf((*MockRepositoryInterface)(nil).GetDronePlanByEstateId), estateId)
 }
 
 // GetEstateById mocks base method.
@@ -75,21 +92,6 @@ func (m *MockRepositoryInterface) GetEstateById(id string) (Estate, error) {
 func (mr *MockRepositoryInterfaceMockRecorder) GetEstateById(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEstateById", reflect.TypeOf((*MockRepositoryInterface)(nil).GetEstateById), id)
-}
-
-// GetEstateIdDronePlan mocks base method.
-func (m *MockRepositoryInterface) GetEstateIdDronePlan(estateId string) (DronePlan, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetEstateIdDronePlan", estateId)
-	ret0, _ := ret[0].(DronePlan)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetEstateIdDronePlan indicates an expected call of GetEstateIdDronePlan.
-func (mr *MockRepositoryInterfaceMockRecorder) GetEstateIdDronePlan(estateId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEstateIdDronePlan", reflect.TypeOf((*MockRepositoryInterface)(nil).GetEstateIdDronePlan), estateId)
 }
 
 // GetEstateStatsById mocks base method.
