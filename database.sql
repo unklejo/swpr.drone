@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS trees (
     height INTEGER NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
 	updated_at TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE (estate_id, x_coordinate, y_coordinate) -- Ensure no duplicate trees in the same plot
+    UNIQUE (estate_id, x_coordinate, y_coordinate)
 );
 
 -- Indexes to improve query performance
