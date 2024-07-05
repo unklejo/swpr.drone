@@ -100,7 +100,7 @@ func (s *Server) GetEstateStats(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, stats)
 }
 
-// 3. Handler for GET `/estate/:id/drone-plan` endpoint
+// 4. Handler for GET `/estate/:id/drone-plan` endpoint
 func (s *Server) GetDronePlan(ctx echo.Context) error {
 	estateId := ctx.Param("id")
 
