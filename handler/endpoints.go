@@ -99,3 +99,26 @@ func (s *Server) GetEstateStats(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, stats)
 }
+
+// 3. Handler for GET `/estate/:id/drone-plan` endpoint
+func (s *Server) GetDronePlan(ctx echo.Context) error {
+	estateId := ctx.Param("id")
+
+	// Check the estate exist or not, just like in AddTree
+	_, err := s.Repository.GetEstateById(estateId)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ctx.JSON(http.StatusNotFound, map[string]string{"error": "Estate not found"})
+		}
+	}
+
+	distance, err := s.Repository.GetDronePlanByEstateId(estateId)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ctx.JSON(http.StatusNotFound, map[string]string{"error": "Drone plan not found"})
+		}
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve drone plans"})
+	}
+
+	return ctx.JSON(http.StatusOK, distance)
+}
