@@ -63,6 +63,21 @@ func (mr *MockRepositoryInterfaceMockRecorder) CreateEstate(id, width, length in
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEstate", reflect.TypeOf((*MockRepositoryInterface)(nil).CreateEstate), id, width, length)
 }
 
+// GetDronePlanByEstateId mocks base method.
+func (m *MockRepositoryInterface) GetDronePlanByEstateId(estateId string) (repository.DronePlan, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDronePlanByEstateId", estateId)
+	ret0, _ := ret[0].(repository.DronePlan)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDronePlanByEstateId indicates an expected call of GetDronePlanByEstateId.
+func (mr *MockRepositoryInterfaceMockRecorder) GetDronePlanByEstateId(estateId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDronePlanByEstateId", reflect.TypeOf((*MockRepositoryInterface)(nil).GetDronePlanByEstateId), estateId)
+}
+
 // GetEstateById mocks base method.
 func (m *MockRepositoryInterface) GetEstateById(id string) (repository.Estate, error) {
 	m.ctrl.T.Helper()

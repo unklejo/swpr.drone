@@ -19,11 +19,15 @@ type EstateStats struct {
 	MedianHeight int `json:"median"`
 }
 
+type DronePlan struct {
+	Distance int `json:"distance"`
+}
+
 type RepositoryInterface interface {
 	GetTestById(ctx context.Context, input GetTestByIdInput) (output GetTestByIdOutput, err error)
 	CreateEstate(id string, width, length int) (err error)
 	AddTree(id, estateId string, x, y, height int) (err error)
 	GetEstateById(id string) (estate Estate, err error)
 	GetEstateStatsById(estateId string) (stats EstateStats, err error)
-	GetDronePlanByEstateId(estateId string) (distance int, err error)
+	GetDronePlanByEstateId(estateId string) (plan DronePlan, err error)
 }

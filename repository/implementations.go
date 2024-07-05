@@ -39,10 +39,10 @@ func (r *Repository) GetEstateStatsById(estateId string) (stats EstateStats, err
 	return stats, nil
 }
 
-func (r *Repository) GetDronePlanByEstateId(estateId string) (distance int, err error) {
-	err = r.Db.QueryRow("SELECT distance FROM drone_plans WHERE estate_id = $1", estateId).Scan(&distance)
+func (r *Repository) GetDronePlanByEstateId(estateId string) (plan DronePlan, err error) {
+	err = r.Db.QueryRow("SELECT distance FROM drone_plans WHERE estate_id = $1", estateId).Scan(&plan.Distance)
 	if err != nil {
-		return 0, err
+		return plan, err
 	}
-	return distance, nil
+	return plan, nil
 }
