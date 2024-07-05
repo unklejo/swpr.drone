@@ -13,10 +13,10 @@ type Estate struct {
 }
 
 type EstateStats struct {
-	Count        int
-	MaxHeight    int
-	MinHeight    int
-	MedianHeight int
+	Count        int `json:"count"`
+	MaxHeight    int `json:"max"`
+	MinHeight    int `json:"min"`
+	MedianHeight int `json:"median"`
 }
 
 type RepositoryInterface interface {
