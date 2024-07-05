@@ -57,7 +57,7 @@ func (s *Server) AddTreeToEstate(ctx echo.Context) error {
 	estate, err := s.Repository.GetEstateById(estateId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return ctx.JSON(http.StatusNotFound, map[string]string{"error": "Related resource not found"})
+			return ctx.JSON(http.StatusNotFound, map[string]string{"error": "Estate not found"})
 		}
 	}
 
@@ -83,11 +83,17 @@ func (s *Server) AddTreeToEstate(ctx echo.Context) error {
 // 3. Handler for GET `/estate/:id/stats` endpoint
 func (s *Server) GetEstateStats(ctx echo.Context) error {
 	estateId := ctx.Param("id")
-	stats, err := s.Repository.GetEstateStatsById(estateId)
+
+	// Check the estate exist or not, just like in AddTree
+	_, err := s.Repository.GetEstateById(estateId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return ctx.JSON(http.StatusNotFound, map[string]string{"error": "Estate not found"})
 		}
+	}
+
+	stats, err := s.Repository.GetEstateStatsById(estateId)
+	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve estate stats"})
 	}
 

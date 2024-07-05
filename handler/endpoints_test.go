@@ -177,7 +177,7 @@ func TestAddTree_EstateNotFound(t *testing.T) {
 	h.AddTreeToEstate(c)
 
 	assert.Equal(t, http.StatusNotFound, rec.Code)
-	assert.Contains(t, rec.Body.String(), "Related resource not found")
+	assert.Contains(t, rec.Body.String(), "Estate not found")
 }
 
 func TestAddTree_DatabaseError(t *testing.T) {
@@ -273,6 +273,7 @@ func TestGetEstateStats_Success(t *testing.T) {
 		Repository: mockRepo,
 	}
 
+	mockRepo.EXPECT().GetEstateById("1").Return(repository.Estate{Id: "1", Width: 10, Length: 10}, nil)
 	mockRepo.EXPECT().GetEstateStatsById("1").Return(repository.EstateStats{Count: 3, MaxHeight: 20, MinHeight: 5, MedianHeight: 15}, nil)
 
 	h.GetEstateStats(c)
@@ -301,6 +302,7 @@ func TestGetEstateStats_NoTreesFound(t *testing.T) {
 		Repository: mockRepo,
 	}
 
+	mockRepo.EXPECT().GetEstateById("1").Return(repository.Estate{Id: "1", Width: 10, Length: 10}, nil)
 	mockRepo.EXPECT().GetEstateStatsById("1").Return(repository.EstateStats{Count: 0, MaxHeight: 0, MinHeight: 0, MedianHeight: 0}, nil)
 
 	h.GetEstateStats(c)
@@ -310,4 +312,29 @@ func TestGetEstateStats_NoTreesFound(t *testing.T) {
 	assert.Contains(t, rec.Body.String(), `"max":0`)
 	assert.Contains(t, rec.Body.String(), `"min":0`)
 	assert.Contains(t, rec.Body.String(), `"median":0`)
+}
+
+func TestGetEstateStats_EstateNotFound(t *testing.T) {
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/estate/1/stats", nil)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetParamNames("id")
+	c.SetParamValues("1")
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
+	h := &Server{
+		Repository: mockRepo,
+	}
+
+	mockRepo.EXPECT().GetEstateById("1").Return(repository.Estate{Id: "", Width: 0, Length: 0}, sql.ErrNoRows)
+
+	h.GetEstateStats(c)
+
+	assert.Equal(t, http.StatusNotFound, rec.Code)
+	assert.Contains(t, rec.Body.String(), "Estate not found")
 }
