@@ -35,3 +35,10 @@ CREATE TABLE IF NOT EXISTS trees (
 -- Indexes to improve query performance
 CREATE INDEX IF NOT EXISTS idx_trees_estate_id ON trees (estate_id);
 
+-- Table to store drone plan
+CREATE TABLE drone_plans (
+    id UUID PRIMARY KEY,
+    estate_id UUID REFERENCES estates(id) ON DELETE CASCADE,
+    distance INTEGER NOT NULL,
+    UNIQUE (estate_id)
+);

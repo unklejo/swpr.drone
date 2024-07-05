@@ -1,6 +1,8 @@
 package repository
 
-import "context"
+import (
+	"context"
+)
 
 func (r *Repository) GetTestById(ctx context.Context, input GetTestByIdInput) (output GetTestByIdOutput, err error) {
 	err = r.Db.QueryRowContext(ctx, "SELECT name FROM test WHERE id = $1", input.Id).Scan(&output.Name)
@@ -37,7 +39,10 @@ func (r *Repository) GetEstateStatsById(estateId string) (stats EstateStats, err
 	return stats, nil
 }
 
-func (r *Repository) GetDronePlan(estateId string) (distance int, err error) {
-	// TO DO
+func (r *Repository) GetDronePlanByEstateId(estateId string) (distance int, err error) {
+	err = r.Db.QueryRow("SELECT distance FROM drone_plans WHERE estate_id = $1", estateId).Scan(&distance)
+	if err != nil {
+		return 0, err
+	}
 	return distance, nil
 }
