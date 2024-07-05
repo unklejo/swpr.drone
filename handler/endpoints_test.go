@@ -283,3 +283,31 @@ func TestGetEstateStats_Success(t *testing.T) {
 	assert.Contains(t, rec.Body.String(), `"min":5`)
 	assert.Contains(t, rec.Body.String(), `"median":15`)
 }
+
+func TestGetEstateStats_NoTreesFound(t *testing.T) {
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/estate/1/stats", nil)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetParamNames("id")
+	c.SetParamValues("1")
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
+	h := &Server{
+		Repository: mockRepo,
+	}
+
+	mockRepo.EXPECT().GetEstateStatsById("1").Return(repository.EstateStats{Count: 0, MaxHeight: 0, MinHeight: 0, MedianHeight: 0}, nil)
+
+	h.GetEstateStats(c)
+
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"count":0`)
+	assert.Contains(t, rec.Body.String(), `"max":0`)
+	assert.Contains(t, rec.Body.String(), `"min":0`)
+	assert.Contains(t, rec.Body.String(), `"median":0`)
+}
