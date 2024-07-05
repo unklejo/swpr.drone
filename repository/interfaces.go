@@ -25,4 +25,5 @@ type RepositoryInterface interface {
 	AddTree(id, estateId string, x, y, height int) (err error)
 	GetEstateById(id string) (estate Estate, err error)
 	GetEstateStatsById(estateId string) (stats EstateStats, err error)
+	GetDronePlan(estateId string) (distance int, err error)
 }

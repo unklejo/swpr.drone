@@ -36,3 +36,8 @@ func (r *Repository) GetEstateStatsById(estateId string) (stats EstateStats, err
 
 	return stats, nil
 }
+
+func (r *Repository) GetDronePlan(estateId string) (distance int, err error) {
+	// TO DO
+	return distance, nil
+}
