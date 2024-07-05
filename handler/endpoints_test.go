@@ -254,3 +254,29 @@ func TestAddTree_CoordinatesOutOfBounds(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, rec.Code)
 	assert.Contains(t, rec.Body.String(), "Coordinates out of bounds")
 }
+
+// 3. Get Estate test files
+func TestGetEstateStats_Success(t *testing.T) {
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/estate/1/stats", nil)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetParamNames("id")
+	c.SetParamValues("1")
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
+	h := &Server{
+		Repository: mockRepo,
+	}
+
+	mockRepo.EXPECT().GetEstateStatsById("1").Return(repository.EstateStats{Count: 3, MaxHeight: 20, MinHeight: 5, MedianHeight: 15}, nil)
+
+	h.GetEstateStats(c)
+
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"count":3`)
+}
