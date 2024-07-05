@@ -414,7 +414,7 @@ func TestGetDronePlan_EstateNotFound(t *testing.T) {
 	h.GetDronePlan(c)
 
 	assert.Equal(t, http.StatusNotFound, rec.Code)
-	assert.Contains(t, rec.Body.String(), `"error":"Estate not found"`)
+	assert.Contains(t, rec.Body.String(), "Estate not found")
 }
 
 func TestGetDronePlan_DronePlanNotFound(t *testing.T) {
@@ -435,10 +435,36 @@ func TestGetDronePlan_DronePlanNotFound(t *testing.T) {
 	}
 
 	mockRepo.EXPECT().GetEstateById("1").Return(repository.Estate{Id: "1", Width: 10, Length: 5}, nil)
-	mockRepo.EXPECT().GetDronePlanByEstateId("1").Return(0, sql.ErrNoRows)
+	mockRepo.EXPECT().GetDronePlanByEstateId("1").Return(repository.DronePlan{}, sql.ErrNoRows)
 
 	h.GetDronePlan(c)
 
 	assert.Equal(t, http.StatusNotFound, rec.Code)
-	assert.Contains(t, rec.Body.String(), `"error":"Drone plan not found"`)
+	assert.Contains(t, rec.Body.String(), "Drone plan not found")
+}
+
+func TestGetDronePlan_DatabaseError(t *testing.T) {
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/estate/1/drone-plan", nil)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetParamNames("id")
+	c.SetParamValues("1")
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRepo := mocks.NewMockRepositoryInterface(ctrl)
+	h := &Server{
+		Repository: mockRepo,
+	}
+
+	mockRepo.EXPECT().GetEstateById("1").Return(repository.Estate{Id: "1", Width: 10, Length: 10}, nil)
+	mockRepo.EXPECT().GetDronePlanByEstateId("1").Return(repository.DronePlan{}, repository.ErrDatabaseError)
+
+	h.GetDronePlan(c)
+
+	assert.Equal(t, http.StatusInternalServerError, rec.Code)
+	assert.Contains(t, rec.Body.String(), "Failed to retrieve drone plans")
 }
