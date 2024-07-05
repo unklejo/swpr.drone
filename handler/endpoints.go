@@ -12,7 +12,7 @@ import (
 )
 
 // 1. Handler for POST `/estate` endpoint
-func (s *Server) CreateEstate(ctx echo.Context) error {
+func (s *Server) PostEstate(ctx echo.Context) error {
 	var request struct {
 		Width  int `json:"width"`
 		Length int `json:"length"`
@@ -26,9 +26,9 @@ func (s *Server) CreateEstate(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Width and Length must be greater than 0"})
 	}
 
-	id := uuid.New().String()
+	id, err := s.Repository.CreateEstate(request.Width, request.Length)
 
-	if err := s.Repository.CreateEstate(id, request.Width, request.Length); err != nil {
+	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create estate"})
 	}
 
@@ -36,7 +36,7 @@ func (s *Server) CreateEstate(ctx echo.Context) error {
 }
 
 // 2. Handler for POST `/estate/:id/tree` endpoint
-func (s *Server) AddTreeToEstate(ctx echo.Context) error {
+func (s *Server) PostEstateIdTree(ctx echo.Context, uuid uuid.UUID) error {
 	estateId := ctx.Param("id")
 	var request struct {
 		X      int `json:"x"`
@@ -67,8 +67,7 @@ func (s *Server) AddTreeToEstate(ctx echo.Context) error {
 	}
 
 	// Error handling regarding database and foreign key
-	treeId := uuid.New().String()
-	err = s.Repository.AddTree(treeId, estateId, request.X, request.Y, request.Height)
+	id, err := s.Repository.AddTree(estateId, request.X, request.Y, request.Height)
 	if err != nil {
 		// Tree already exists in the plot (handling racing condition)
 		if err, ok := err.(*pq.Error); ok && err.Code == "23505" { // Unique violation
@@ -77,11 +76,11 @@ func (s *Server) AddTreeToEstate(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to add tree"})
 	}
 
-	return ctx.JSON(http.StatusCreated, map[string]string{"id": treeId})
+	return ctx.JSON(http.StatusCreated, map[string]string{"id": id})
 }
 
 // 3. Handler for GET `/estate/:id/stats` endpoint
-func (s *Server) GetEstateStats(ctx echo.Context) error {
+func (s *Server) GetEstateIdStats(ctx echo.Context, uuid uuid.UUID) error {
 	estateId := ctx.Param("id")
 
 	// Check the estate exist or not, just like in AddTree
@@ -101,7 +100,7 @@ func (s *Server) GetEstateStats(ctx echo.Context) error {
 }
 
 // 4. Handler for GET `/estate/:id/drone-plan` endpoint
-func (s *Server) GetDronePlan(ctx echo.Context) error {
+func (s *Server) GetEstateIdDronePlan(ctx echo.Context, uuid uuid.UUID) error {
 	estateId := ctx.Param("id")
 
 	// Check the estate exist or not, just like in AddTree

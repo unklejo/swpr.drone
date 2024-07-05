@@ -13,7 +13,7 @@ CREATE TABLE test (
 
 -- Table to store estate information
 CREATE TABLE IF NOT EXISTS estates (
-    id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     width INTEGER NOT NULL,
     length INTEGER NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS estates (
 
 -- Table to store tree information within estates
 CREATE TABLE IF NOT EXISTS trees (
-    id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     estate_id UUID NOT NULL REFERENCES estates(id) ON DELETE CASCADE,
     x_coordinate INTEGER NOT NULL,
     y_coordinate INTEGER NOT NULL,
@@ -37,7 +37,7 @@ CREATE INDEX IF NOT EXISTS idx_trees_estate_id ON trees (estate_id);
 
 -- Table to store drone plan
 CREATE TABLE drone_plans (
-    id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     estate_id UUID REFERENCES estates(id) ON DELETE CASCADE,
     distance INTEGER NOT NULL,
     UNIQUE (estate_id)

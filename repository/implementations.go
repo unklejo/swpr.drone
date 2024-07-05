@@ -12,14 +12,14 @@ func (r *Repository) GetTestById(ctx context.Context, input GetTestByIdInput) (o
 	return
 }
 
-func (r *Repository) CreateEstate(id string, width, length int) (err error) {
-	_, err = r.Db.Exec("INSERT INTO estates (id, width, length) VALUES ($1, $2, $3)", id, width, length)
-	return err
+func (r *Repository) CreateEstate(width, length int) (id string, err error) {
+	err = r.Db.QueryRow("INSERT INTO estates (width, length) VALUES ($1, $2) RETURNING id", width, length).Scan(&id)
+	return id, err
 }
 
-func (r *Repository) AddTree(id, estateId string, x, y, height int) (err error) {
-	_, err = r.Db.Exec("INSERT INTO trees (id, estate_id, x_coordinate, y_coordinate, height) VALUES ($1, $2, $3, $4, $5)", id, estateId, x, y, height)
-	return err
+func (r *Repository) AddTree(estateId string, x, y, height int) (id string, err error) {
+	err = r.Db.QueryRow("INSERT INTO trees (estate_id, x_coordinate, y_coordinate, height) VALUES ($1, $2, $3, $4) RETURNING id", estateId, x, y, height).Scan(&id)
+	return id, err
 }
 
 func (r *Repository) GetEstateById(id string) (estate Estate, err error) {
