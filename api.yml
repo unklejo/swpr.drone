@@ -94,7 +94,7 @@ paths:
           description: Estate not found
         '500':
           description: Internal server error
-/estate/{id}/stats:
+  /estate/{id}/stats:
     get:
       summary: Get estate stats based on trees
       parameters:
@@ -124,3 +124,25 @@ paths:
           description: Estate not found
         '500':
           description: Internal server error
+  /estate/{id}/drone-plan:
+    get:
+      summary: Get drone monitoring distance
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: Drone monitoring distance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  distance:
+                    type: integer
+        '404':
+          description: Estate not found
