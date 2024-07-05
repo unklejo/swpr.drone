@@ -121,3 +121,18 @@ func (s *Server) GetEstateIdDronePlan(ctx echo.Context, uuid uuid.UUID) error {
 
 	return ctx.JSON(http.StatusOK, distance)
 }
+
+// Get coordinate
+func getCoordinate(maxDistance int) error {
+	i := 0
+
+	for i < maxDistance {
+		// 1. check next post
+		// 1.1. if post not empty
+		// 1.1.1. traverse to next x_coordinate
+		// 1.1.2. else check north
+		// 1.1.1.1. if exist: traverse to next y_coordinate
+		// 1.1.1.2. else: end
+	}
+	return nil
+}

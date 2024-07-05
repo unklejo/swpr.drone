@@ -20,7 +20,13 @@ type EstateStats struct {
 }
 
 type DronePlan struct {
-	Distance int `json:"distance"`
+	Distance int  `json:"distance"`
+	Rest     Rest `json:"rest"`
+}
+
+type Rest struct {
+	X int `json:"x"`
+	Y int `json:"y"`
 }
 
 type RepositoryInterface interface {
